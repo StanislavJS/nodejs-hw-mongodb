@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
+    "dev": "nodemon src/index.mjs",
+    "start": "node src/index.mjs",
     "lint": "eslint ."
   },
   "repository": {
@@ -15,7 +16,6 @@
   "keywords": [],
   "author": "Stanislav Tatarchuk <stasyk55@gmail.com>",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/StanislavJS/nodejs-hw-mongodb/issues"
   },
