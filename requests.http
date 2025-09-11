@@ -1,0 +1,55 @@
+### Получить все контакты
+GET http://localhost:3000/contacts
+Accept: application/json
+
+###
+
+### Получить контакт по id
+GET http://localhost:3000/contacts
+Accept: application/json
+
+###
+
+### Создать новый контакт
+POST http://localhost:3000/contacts
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Mango",
+  "email": "mango@gmail.com",
+  "phoneNumber": "123-45-67",
+  "isFavourite": false,
+  "contactType": "personal"
+}
+
+###
+
+### Попытка создать контакт без имени (должно вернуть 400)
+POST http://localhost:3000/contacts
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "no-name@example.com",
+  "phoneNumber": "000-00-00",
+  "isFavourite": false,
+  "contactType": "personal"
+}
+
+###
+
+### Обновить контакт (PATCH)
+PATCH http://localhost:3000/contacts
+Content-Type: application/json
+Accept: application/json
+
+{
+  "phoneNumber": "999-88-77"
+}
+
+###
+
+### Удалить контакт
+DELETE http://localhost:3000/contacts
+Accept: application/json
