@@ -1,55 +1,53 @@
-### Получить все контакты
+### Get first page (default perPage=10)
 GET http://localhost:3000/contacts
 Accept: application/json
 
 ###
 
-### Получить контакт по id
-GET http://localhost:3000/contacts
+### Get page 2 with 4 items per page
+GET http://localhost:3000/contacts?page=2&perPage=4
 Accept: application/json
 
 ###
 
-### Создать новый контакт
+### Get sorted by name descending
+GET http://localhost:3000/contacts?sortBy=name&sortOrder=desc
+Accept: application/json
+
+###
+
+### Filter by type = home and only favourites
+GET http://localhost:3000/contacts?type=home&isFavourite=true
+Accept: application/json
+
+###
+
+### Create a contact (valid)
 POST http://localhost:3000/contacts
 Content-Type: application/json
 Accept: application/json
 
 {
-  "name": "Mango",
-  "email": "mango@gmail.com",
-  "phoneNumber": "123-45-67",
-  "isFavourite": false,
+  "name": "Test User",
+  "phoneNumber": "+380501234567",
+  "email": "test@example.com",
   "contactType": "personal"
 }
 
 ###
 
-### Попытка создать контакт без имени (должно вернуть 400)
-POST http://localhost:3000/contacts
+### Update contact (patch)
+PATCH http://localhost:3000/contacts/68b889cd99d083f76299ca51
 Content-Type: application/json
-Accept: application/json
 
 {
-  "email": "no-name@example.com",
-  "phoneNumber": "000-00-00",
-  "isFavourite": false,
-  "contactType": "personal"
+  "isFavourite": true
 }
+
+
 
 ###
 
-### Обновить контакт (PATCH)
-PATCH http://localhost:3000/contacts
-Content-Type: application/json
-Accept: application/json
-
-{
-  "phoneNumber": "999-88-77"
-}
-
-###
-
-### Удалить контакт
-DELETE http://localhost:3000/contacts
+### Delete contact
+DELETE http://localhost:3000/contacts/68b889cd99d083f76299ca51
 Accept: application/json
