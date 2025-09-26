@@ -20,4 +20,4 @@ export const updateContactSchema = Joi.object({
   email: email.optional(),
   isFavourite: isFavourite.optional(),
   contactType: contactType.optional()
-}).min(1); // потрібно принаймні одне поле для оновлення
+}).min(1);
