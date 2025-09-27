@@ -1,33 +1,17 @@
-import createError from "http-errors";
+// src/services/contacts.mjs
 import { Contact } from "../models/Contact.mjs";
+import createHttpError from "http-errors";
 
-
-export const getAllContacts = async (
-  ownerId,
-  {
-    page = 1,
-    perPage = 10,
-    sortBy = "name",
-    sortOrder = "asc",
-    filter = {},
-  } = {}
-) => {
+export const getAll = async ({ userId, page = 1, perPage = 10, sortBy = "createdAt", sortOrder = "asc", filter = {} }) => {
   const pageNum = Math.max(1, Number(page) || 1);
   const limit = Math.max(1, Number(perPage) || 10);
   const skip = (pageNum - 1) * limit;
 
-  const query = { owner: ownerId };
+  const query = { userId };
 
-  if (filter.type) {
-    query.contactType = filter.type;
-  }
+  if (filter.type) query.contactType = filter.type;
+  if (typeof filter.isFavourite !== "undefined") query.isFavourite = filter.isFavourite === "true";
 
-  if (typeof filter.isFavourite !== "undefined") {
-    query.isFavourite =
-      filter.isFavourite === "true" || filter.isFavourite === true;
-  }
-
-  // build sort object
   const sort = {};
   sort[sortBy] = sortOrder === "desc" ? -1 : 1;
 
@@ -38,51 +22,31 @@ export const getAllContacts = async (
 
   const totalPages = Math.max(1, Math.ceil(totalItems / limit));
 
-  return {
-    data,
-    page: pageNum,
-    perPage: limit,
-    totalItems,
-    totalPages,
-    hasPreviousPage: pageNum > 1,
-    hasNextPage: pageNum < totalPages,
-  };
+  return { data, page: pageNum, perPage: limit, totalItems, totalPages };
 };
 
-//id
-export const getContactById = async (ownerId, id) => {
-  const contact = await Contact.findOne({ _id: id, owner: ownerId });
-  if (!contact) {
-    throw createError(404, "Contact not found");
-  }
+export const getById = async (userId, id) => {
+  const contact = await Contact.findOne({ _id: id, userId });
+  if (!contact) throw createHttpError(404, "Contact not found");
   return contact;
 };
 
-export const createContact = async (ownerId, data) => {
-  if (!data.name || !data.phoneNumber) {
-    throw createError(400, "Missing required fields: name or phoneNumber");
+export const create = async (userId, payload) => {
+  if (!payload.name || !payload.phoneNumber) {
+    throw createHttpError(400, "Missing required fields: name or phoneNumber");
   }
-
-  const newContact = await Contact.create({ ...data, owner: ownerId }); // owner
-  return newContact;
+  const contact = await Contact.create({ ...payload, userId });
+  return contact;
 };
 
-export const updateContact = async (ownerId, id, data) => {
-  const updated = await Contact.findOneAndUpdate(
-    { _id: id, owner: ownerId },
-    data,
-    { new: true, runValidators: true }
-  );
-  if (!updated) {
-    throw createError(404, "Contact not found");
-  }
+export const update = async (userId, id, payload) => {
+  const updated = await Contact.findOneAndUpdate({ _id: id, userId }, payload, { new: true, runValidators: true });
+  if (!updated) throw createHttpError(404, "Contact not found");
   return updated;
 };
 
-export const deleteContact = async (ownerId, id) => {
-  const deleted = await Contact.findOneAndDelete({ _id: id, owner: ownerId });
-  if (!deleted) {
-    throw createError(404, "Contact not found");
-  }
+export const remove = async (userId, id) => {
+  const deleted = await Contact.findOneAndDelete({ _id: id, userId });
+  if (!deleted) throw createHttpError(404, "Contact not found");
   return deleted;
 };

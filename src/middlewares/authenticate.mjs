@@ -1,10 +1,11 @@
+// src/middlewares/authenticate.mjs
 import jwt from "jsonwebtoken";
 import createHttpError from "http-errors";
 import User from "../models/User.mjs";
 
 export const authenticate = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers.authorization || "";
     if (!authHeader) throw createHttpError(401, "No token provided");
 
     const [bearer, token] = authHeader.split(" ");

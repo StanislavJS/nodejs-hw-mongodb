@@ -1,5 +1,7 @@
-### 1. Реєстрація нового користувача
-POST http://localhost:3000/auth/register
+@baseUrl = http://localhost:3000
+
+### 1) Register
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
@@ -8,8 +10,8 @@ Content-Type: application/json
   "password": "qwerty123"
 }
 
-### 2. Логін
-POST http://localhost:3000/auth/login
+### 2) Login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
@@ -17,55 +19,47 @@ Content-Type: application/json
   "password": "qwerty123"
 }
 
-# ⚠️ Скопіюйте accessToken з відповіді нижче і вставте в усі наступні запити замість {{accessToken}}
+# After login copy accessToken from response -> set variable `accessToken` manually in environment for next requests
+# or if using REST Client you can use response handling; otherwise copy-paste.
 
-###
-
-### 3. Отримання списку контактів
-GET http://localhost:3000/contacts?page=1&perPage=5
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDUxMWVlNjgzNmE2NjRlYTE2YTM3NCIsImlhdCI6MTc1ODkwMDY0NSwiZXhwIjoxNzU4OTAxNTQ1fQ.3wmq-kyLIxJMx0WYDs3MzPockfjRnbqaJr8S7KPX0qQ
-
-### 4. Створення нового контакту
-POST http://localhost:3000/contacts
+### 3) Get contacts (list)
+GET {{baseUrl}}/contacts?page=1&perPage=5
+Authorization: Bearer 
+### 4) Create contact
+POST {{baseUrl}}/contacts
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDUxMWVlNjgzNmE2NjRlYTE2YTM3NCIsImlhdCI6MTc1ODkwMDY0NSwiZXhwIjoxNzU4OTAxNTQ1fQ.3wmq-kyLIxJMx0WYDs3MzPockfjRnbqaJr8S7KPX0qQ
+Authorization: Bearer 
 
 {
   "name": "Ivan Petrov",
-  "phoneNumber": "+380501234567",
-  "email": "ivan.petrov@example.com",
-  "isFavourite": true,
-  "contactType": "work"
+  "phoneNumber": "+380991112233",
+  "email": "ivan@example.com",
+  "contactType": "work",
+  "isFavourite": true
 }
 
-# ⚠️ Скопіюйте _id нового контакту з відповіді і вставте в наступні запити замість {{contactId}}
-
-###
-
-### 5. Отримання конкретного контакту
-GET http://localhost:3000/contacts/68d6b1c46b68dde0dc769d01
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDUxMWVlNjgzNmE2NjRlYTE2YTM3NCIsImlhdCI6MTc1ODkwMDY0NSwiZXhwIjoxNzU4OTAxNTQ1fQ.3wmq-kyLIxJMx0WYDs3MzPockfjRnbqaJr8S7KPX0qQ
-
-### 6. Оновлення контакту
-PATCH http://localhost:3000/contacts/68d6b1c46b68dde0dc769d01
+### 5) Get contact by id (replace :id)
+GET {{baseUrl}}/contacts/
+Authorization: Bearer
+### 6) Update contact
+PATCH {{baseUrl}}/contacts/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDUxMWVlNjgzNmE2NjRlYTE2YTM3NCIsImlhdCI6MTc1ODkwMDY0NSwiZXhwIjoxNzU4OTAxNTQ1fQ.3wmq-kyLIxJMx0WYDs3MzPockfjRnbqaJr8S7KPX0qQ
-
+Authorization: Bearer 
 {
-  "phoneNumber": "+380501111111",
-  "isFavourite": false
+  "phoneNumber": "+380995551122"
 }
 
-### 7. Видалення контакту
-DELETE http://localhost:3000/contacts/68d6b1c46b68dde0dc769d01
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDUxMWVlNjgzNmE2NjRlYTE2YTM3NCIsImlhdCI6MTc1ODkwMDY0NSwiZXhwIjoxNzU4OTAxNTQ1fQ.3wmq-kyLIxJMx0WYDs3MzPockfjRnbqaJr8S7KPX0qQ
+### 7) Delete contact
+DELETE {{baseUrl}}/contacts/
 
-### 8. Рефреш токена
-POST http://localhost:3000/auth/refresh
+Authorization: Bearer 
+### 8) Refresh tokens
+POST {{baseUrl}}/auth/refresh
 Content-Type: application/json
-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDUxMWVlNjgzNmE2NjRlYTE2YTM3NCIsImlhdCI6MTc1ODkwMDY0NSwiZXhwIjoxNzU4OTAxNTQ1fQ.3wmq-kyLIxJMx0WYDs3MzPockfjRnbqaJr8S7KPX0qQ
+# cookie refreshToken should be sent automatically by client if supported (REST Client/Browser)
+# or paste cookie header manually
 
-### 9. Логаут
-POST http://localhost:3000/auth/logout
+### 9) Logout
+POST {{baseUrl}}/auth/logout
 Content-Type: application/json
-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDUxMWVlNjgzNmE2NjRlYTE2YTM3NCIsImlhdCI6MTc1ODkwMDc2NCwiZXhwIjoxNzU4OTAxNjY0fQ.uUfY6V2KXkidrsr3ouBU5L6vWtSm7l7RmAyC0XQnw2I
+# cookie refreshToken should be sent automatically
