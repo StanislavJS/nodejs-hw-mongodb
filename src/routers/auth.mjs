@@ -7,7 +7,7 @@ import {
   logoutController,
 } from "../controllers/auth.mjs";
 import { validateBody } from "../middlewares/validateBody.mjs";
-import { registerSchema, loginSchema } from "../validation/contactsSchemas.mjs";
+import { registerSchema, loginSchema } from "../validation/authSchemas.mjs";
 
 const router = Router();
 

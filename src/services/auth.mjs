@@ -1,10 +1,10 @@
-// src/services/auth.mjs
 import bcrypt from "bcryptjs";
 import createHttpError from "http-errors";
+import jwt from "jsonwebtoken";
+
 import User from "../models/User.mjs";
 import Session from "../models/Session.mjs";
 import { generateTokens } from "../utils/generateTokens.mjs";
-import jwt from "jsonwebtoken";
 
 export const register = async ({ name, email, password }) => {
   const existing = await User.findOne({ email });
@@ -13,9 +13,13 @@ export const register = async ({ name, email, password }) => {
   const hashed = await bcrypt.hash(password, 10);
   const user = await User.create({ name, email, password: hashed });
 
-  const { password: _, ...userData } = user.toObject();
-
-  return userData;
+  return {
+    user: {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    },
+  };
 };
 
 export const login = async ({ email, password }) => {
@@ -27,12 +31,15 @@ export const login = async ({ email, password }) => {
   const matched = await bcrypt.compare(password, user.password);
   if (!matched) throw createHttpError(401, "Invalid credentials");
 
-  
-  const { accessToken, refreshToken, accessTokenValidUntil, refreshTokenValidUntil } =
-    generateTokens(user._id);
-
  
   await Session.deleteMany({ userId: user._id });
+
+  const {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil,
+    refreshTokenValidUntil,
+  } = generateTokens(user._id);
 
   await Session.create({
     userId: user._id,
@@ -48,28 +55,33 @@ export const login = async ({ email, password }) => {
 export const refresh = async (oldRefreshToken) => {
   if (!oldRefreshToken) throw createHttpError(401, "No refresh token");
 
-  
   let payload;
   try {
     payload = jwt.verify(oldRefreshToken, process.env.JWT_REFRESH_SECRET);
-  } catch (err) {
+  } catch {
     throw createHttpError(401, "Invalid refresh token");
   }
 
+  const oldSession = await Session.findOne({ refreshToken: oldRefreshToken });
+  if (!oldSession) throw createHttpError(401, "Invalid session or token");
 
-  const session = await Session.findOne({ refreshToken: oldRefreshToken });
-  if (!session) throw createHttpError(401, "Invalid refresh token");
+ 
+  await Session.deleteOne({ _id: oldSession._id });
 
-  
-  const { accessToken, refreshToken, accessTokenValidUntil, refreshTokenValidUntil } =
-    generateTokens(payload.id);
+  const {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil,
+    refreshTokenValidUntil,
+  } = generateTokens(payload.id);
 
-
-  session.accessToken = accessToken;
-  session.refreshToken = refreshToken;
-  session.accessTokenValidUntil = accessTokenValidUntil;
-  session.refreshTokenValidUntil = refreshTokenValidUntil;
-  await session.save();
+  await Session.create({
+    userId: payload.id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil,
+    refreshTokenValidUntil,
+  });
 
   return { accessToken, refreshToken };
 };
@@ -77,11 +89,7 @@ export const refresh = async (oldRefreshToken) => {
 export const logout = async (oldRefreshToken) => {
   if (!oldRefreshToken) throw createHttpError(401, "No refresh token");
 
-  const session = await Session.findOne({ refreshToken: oldRefreshToken });
-  if (!session) {
-    
-    return;
-  }
+  await Session.findOneAndDelete({ refreshToken: oldRefreshToken });
 
-  await Session.deleteOne({ _id: session._id });
+  return { message: "Logged out successfully" };
 };
