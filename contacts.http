@@ -28,7 +28,7 @@ Authorization: Bearer
 ### 4) Create contact
 POST {{baseUrl}}/contacts
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDRlZDc3ZmZmYTRjYTBlYWQ4ZTZjZiIsImlhdCI6MTc1OTUxNTQ2MSwiZXhwIjoxNzU5NTE2MzYxfQ.CuFzNhPlcqutPpyOcNn7Pse9RYMtjcL1d_ytrtn_Z2U
+Authorization: Bearer 
 
 {
   "name": "Ivan Petrov",
@@ -40,18 +40,18 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDRlZDc3Z
 
 ### 5) Get contact by id (replace :id)
 GET {{baseUrl}}/contacts/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDRlZDc3ZmZmYTRjYTBlYWQ4ZTZjZiIsImlhdCI6MTc1OTQ3MzkyNywiZXhwIjoxNzU5NDc0ODI3fQ.yLU3CqcOD_vYFVF0NErKkNRV5RvwnIA3AOg2B3dBcG4
+Authorization: Bearer 
 ### 6) Update contact
-PATCH {{baseUrl}}/contacts/68df71227c30d65ae9076318
+PATCH {{baseUrl}}/contacts/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDRlZDc3ZmZmYTRjYTBlYWQ4ZTZjZiIsImlhdCI6MTc1OTQ3NDExMSwiZXhwIjoxNzU5NDc1MDExfQ.IvCoPwBkE-txfbCSRRRbVn9ZzHOh8JBTtZpNTwCc7nE
+Authorization: Bearer 
   "phoneNumber": "+380995551122"
 }
 
 ### 7) Delete contact
-DELETE {{baseUrl}}/contacts/68df71227c30d65ae9076318
+DELETE {{baseUrl}}/contacts/
 
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZDRlZDc3ZmZmYTRjYTBlYWQ4ZTZjZiIsImlhdCI6MTc1OTUxNTQ2MSwiZXhwIjoxNzU5NTE2MzYxfQ.CuFzNhPlcqutPpyOcNn7Pse9RYMtjcL1d_ytrtn_Z2U
+Authorization: Bearer 
 POST {{baseUrl}}/auth/refresh
 Content-Type: application/json
 # cookie refreshToken should be sent automatically by client if supported (REST Client/Browser)

@@ -1,83 +1,83 @@
 // src/controllers/contacts.mjs
-import * as contactsService from "../services/contacts.mjs";
+import { Contact } from "../models/Contact.mjs";
 import createHttpError from "http-errors";
 
 // GET /contacts
 export const getContacts = async (req, res, next) => {
   try {
-    const { page, perPage, sortBy, sortOrder, type, isFavourite } = req.query;
-    const filter = { type, isFavourite };
-    const result = await contactsService.getAll({
-      userId: req.user._id,
-      page,
-      perPage,
-      sortBy,
-      sortOrder,
-      filter,
-    });
+    const { page = 1, perPage = 10, sortBy = "createdAt", sortOrder = "asc", type, isFavourite } = req.query;
+
+    const pageNum = Math.max(1, Number(page) || 1);
+    const limit = Math.max(1, Number(perPage) || 10);
+    const skip = (pageNum - 1) * limit;
+
+    const filter = { userId: req.user._id };
+    if (type) filter.contactType = type;
+    if (typeof isFavourite !== "undefined") filter.isFavourite = isFavourite === "true";
+
+    const [contacts, total] = await Promise.all([
+      Contact.find(filter).sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 }).skip(skip).limit(limit),
+      Contact.countDocuments(filter),
+    ]);
 
     res.status(200).json({
-      status: "success",
-      message: "Contacts retrieved successfully",
-      data: result,
+      contacts,
+      page: pageNum,
+      perPage: limit,
+      total,
+      totalPages: Math.ceil(total / limit),
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
 
 // GET /contacts/:contactId
 export const getContactById = async (req, res, next) => {
   try {
-    const contact = await contactsService.getById(req.user._id, req.params.contactId);
-    res.status(200).json({
-      status: "success",
-      message: "Contact retrieved successfully",
-      data: { contact },
-    });
-  } catch (err) {
-    next(err);
+    const { contactId } = req.params;
+    const contact = await Contact.findOne({ _id: contactId, userId: req.user._id });
+    if (!contact) throw createHttpError(404, "Contact not found");
+
+    res.status(200).json({ contact });
+  } catch (error) {
+    next(error);
   }
 };
 
 // POST /contacts
 export const createContact = async (req, res, next) => {
   try {
-    const contact = await contactsService.create(req.user._id, req.body);
-    res.status(201).json({
-      status: "success",
-      message: "Contact created successfully",
-      data: { contact },
-    });
-  } catch (err) {
-    next(err);
+    const contact = await Contact.create({ ...req.body, userId: req.user._id });
+    res.status(201).json({ contact });
+  } catch (error) {
+    next(error);
   }
 };
 
 // PATCH /contacts/:contactId
 export const updateContact = async (req, res, next) => {
   try {
-    const contact = await contactsService.update(req.user._id, req.params.contactId, req.body);
-    res.status(200).json({
-      status: "success",
-      message: "Contact updated successfully",
-      data: { contact },
+    const { contactId } = req.params;
+    const contact = await Contact.findOneAndUpdate({ _id: contactId, userId: req.user._id }, req.body, {
+      new: true,
+      runValidators: true,
     });
-  } catch (err) {
-    next(err);
+    if (!contact) throw createHttpError(404, "Contact not found");
+    res.status(200).json({ contact });
+  } catch (error) {
+    next(error);
   }
 };
 
 // DELETE /contacts/:contactId
 export const deleteContact = async (req, res, next) => {
   try {
-    const contact = await contactsService.remove(req.user._id, req.params.contactId);
-    res.status(200).json({
-      status: "success",
-      message: "Contact deleted successfully",
-      data: { contact },
-    });
-  } catch (err) {
-    next(err);
+    const { contactId } = req.params;
+    const contact = await Contact.findOneAndDelete({ _id: contactId, userId: req.user._id });
+    if (!contact) throw createHttpError(404, "Contact not found");
+    res.status(200).json({ message: "Contact deleted successfully" });
+  } catch (error) {
+    next(error);
   }
 };
