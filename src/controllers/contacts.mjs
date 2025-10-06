@@ -1,4 +1,3 @@
-// src/controllers/contacts.mjs
 import * as contactsService from "../services/contacts.mjs";
 import createHttpError from "http-errors";
 
@@ -36,9 +35,13 @@ export const getContacts = async (req, res, next) => {
 export const getContactById = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await contactsService.getById(req.user._id, contactId);
+    const contact = await contactsService.getById(req.user._id, contactId);
 
-    res.status(200).json(result.data);
+    res.status(200).json({
+      status: 200,
+      message: `Successfully found contact with id ${contactId}!`,
+      data: contact,
+    });
   } catch (err) {
     next(err);
   }
@@ -47,9 +50,13 @@ export const getContactById = async (req, res, next) => {
 // POST /contacts
 export const createContact = async (req, res, next) => {
   try {
-    const result = await contactsService.create(req.user._id, req.body);
+    const contact = await contactsService.create(req.user._id, req.body);
 
-    res.status(201).json(result.data);
+    res.status(201).json({
+      status: 201,
+      message: "Successfully created a contact!",
+      data: contact,
+    });
   } catch (err) {
     next(err);
   }
@@ -59,9 +66,13 @@ export const createContact = async (req, res, next) => {
 export const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await contactsService.update(req.user._id, contactId, req.body);
+    const contact = await contactsService.update(req.user._id, contactId, req.body);
 
-    res.status(200).json(result.data);
+    res.status(200).json({
+      status: 200,
+      message: "Successfully patched a contact!",
+      data: contact,
+    });
   } catch (err) {
     next(err);
   }
@@ -71,9 +82,13 @@ export const updateContact = async (req, res, next) => {
 export const deleteContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const result = await contactsService.remove(req.user._id, contactId);
+    const deleted = await contactsService.remove(req.user._id, contactId);
 
-    res.status(200).json(result.data);
+    res.status(200).json({
+      status: 200,
+      message: "Successfully deleted a contact!",
+      data: deleted,
+    });
   } catch (err) {
     next(err);
   }
