@@ -15,15 +15,14 @@ export const getContacts = async (req, res, next) => {
       filter: { type, isFavourite },
     });
 
+    const { contacts, ...meta } = result;
+
     res.status(200).json({
       status: 200,
       message: "Successfully found contacts!",
       data: {
-        contacts: result.contacts,
-        page: result.page,
-        perPage: result.perPage,
-        total: result.total,
-        totalPages: result.totalPages,
+        items: contacts,
+        ...meta,
       },
     });
   } catch (err) {
@@ -82,13 +81,9 @@ export const updateContact = async (req, res, next) => {
 export const deleteContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
-    const deleted = await contactsService.remove(req.user._id, contactId);
+    await contactsService.remove(req.user._id, contactId);
 
-    res.status(200).json({
-      status: 200,
-      message: "Successfully deleted a contact!",
-      data: deleted,
-    });
+    res.status(204).end();
   } catch (err) {
     next(err);
   }
