@@ -18,12 +18,17 @@ export const getContacts = async (req, res, next) => {
     const { contacts, ...meta } = result;
 
     res.status(200).json({
-      status: 200,
-      message: "Successfully found contacts!",
-      data: {
-        items: contacts,
-        ...meta,
-      },
+  status: 200,
+  message: "Successfully found contacts!",
+  data: contacts,
+  meta: {
+    page: meta.page,
+    perPage: meta.perPage,
+    totalItems: meta.total,
+    totalPages: meta.totalPages,
+    hasPreviousPage: meta.hasPreviousPage ?? meta.page > 1,
+    hasNextPage: meta.hasNextPage ?? meta.page < meta.totalPages,
+  },
     });
   } catch (err) {
     next(err);
