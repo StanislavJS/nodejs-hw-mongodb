@@ -1,6 +1,7 @@
 // src/models/Contact.mjs
 import { Schema, model } from "mongoose";
 
+
 const contactSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -13,10 +14,11 @@ const contactSchema = new Schema(
       default: "personal",
       required: true,
     },
+    photo: { type: String, default: null },
     // userId
     userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Contact = model("Contact", contactSchema, "contacts");

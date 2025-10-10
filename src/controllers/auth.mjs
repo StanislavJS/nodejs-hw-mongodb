@@ -1,6 +1,11 @@
 import * as authService from "../services/auth.mjs";
 import createHttpError from "http-errors";
 
+/// ✅ Нові контролери
+export { sendResetEmailController } from "./auth/sendResetEmail.mjs";
+export { resetPasswordController } from "./auth/resetPassword.mjs";
+
+// Налаштування cookie
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -8,14 +13,14 @@ const cookieOptions = {
   maxAge: 30 * 24 * 60 * 60 * 1000,
 };
 
-// REGISTER 
+// REGISTER
 export const registerController = async (req, res, next) => {
   try {
     const { user } = await authService.register(req.body);
     res.status(201).json({
       status: 201,
       message: "Successfully registered a user!",
-      data: user, 
+      data: user,
     });
   } catch (err) {
     next(err);
@@ -78,4 +83,3 @@ export const logoutController = async (req, res, next) => {
     next(err);
   }
 };
-

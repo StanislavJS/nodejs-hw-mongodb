@@ -18,17 +18,17 @@ export const getContacts = async (req, res, next) => {
     const { contacts, ...meta } = result;
 
     res.status(200).json({
-  status: 200,
-  message: "Successfully found contacts!",
-  data: contacts,
-  meta: {
-    page: meta.page,
-    perPage: meta.perPage,
-    totalItems: meta.total,
-    totalPages: meta.totalPages,
-    hasPreviousPage: meta.hasPreviousPage ?? meta.page > 1,
-    hasNextPage: meta.hasNextPage ?? meta.page < meta.totalPages,
-  },
+      status: 200,
+      message: "Successfully found contacts!",
+      data: contacts,
+      meta: {
+        page: meta.page,
+        perPage: meta.perPage,
+        totalItems: meta.total,
+        totalPages: meta.totalPages,
+        hasPreviousPage: meta.hasPreviousPage ?? meta.page > 1,
+        hasNextPage: meta.hasNextPage ?? meta.page < meta.totalPages,
+      },
     });
   } catch (err) {
     next(err);
@@ -54,6 +54,11 @@ export const getContactById = async (req, res, next) => {
 // POST /contacts
 export const createContact = async (req, res, next) => {
   try {
+    // ✅ якщо є фото — додаємо шлях з Cloudinary
+    if (req.file && req.file.path) {
+      req.body.photo = req.file.path;
+    }
+
     const contact = await contactsService.create(req.user._id, req.body);
 
     res.status(201).json({
@@ -70,6 +75,12 @@ export const createContact = async (req, res, next) => {
 export const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+
+    // ✅ якщо оновлюємо фото
+    if (req.file && req.file.path) {
+      req.body.photo = req.file.path;
+    }
+
     const contact = await contactsService.update(req.user._id, contactId, req.body);
 
     res.status(200).json({

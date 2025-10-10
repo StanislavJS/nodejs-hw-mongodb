@@ -1,0 +1,257 @@
+{
+    "info": {
+        "name": "Contacts API",
+        "_postman_id": "a1b2c3d4-contacts",
+        "description": "Collection for testing contacts CRUD with photo upload",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Create Contact (with photo)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{ACCESS_TOKEN}}"
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "name",
+                            "value": "John Doe",
+                            "type": "text"
+                        },
+                        {
+                            "key": "phoneNumber",
+                            "value": "+123456789",
+                            "type": "text"
+                        },
+                        {
+                            "key": "email",
+                            "value": "john@example.com",
+                            "type": "text"
+                        },
+                        {
+                            "key": "contactType",
+                            "value": "work",
+                            "type": "text"
+                        },
+                        {
+                            "key": "isFavourite",
+                            "value": "true",
+                            "type": "text"
+                        },
+                        {
+                            "key": "photo",
+                            "type": "file",
+                            "src": "path/to/photo.jpg"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{BASE_URL}}/contacts",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "contacts"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Create Contact (without photo)",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{ACCESS_TOKEN}}"
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "name",
+                            "value": "Jane Doe",
+                            "type": "text"
+                        },
+                        {
+                            "key": "phoneNumber",
+                            "value": "+987654321",
+                            "type": "text"
+                        },
+                        {
+                            "key": "email",
+                            "value": "jane@example.com",
+                            "type": "text"
+                        },
+                        {
+                            "key": "contactType",
+                            "value": "home",
+                            "type": "text"
+                        },
+                        {
+                            "key": "isFavourite",
+                            "value": "false",
+                            "type": "text"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{BASE_URL}}/contacts",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "contacts"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get All Contacts",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{ACCESS_TOKEN}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{BASE_URL}}/contacts?page=1&perPage=10&sortBy=name&sortOrder=asc",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "contacts"
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "1"
+                        },
+                        {
+                            "key": "perPage",
+                            "value": "10"
+                        },
+                        {
+                            "key": "sortBy",
+                            "value": "name"
+                        },
+                        {
+                            "key": "sortOrder",
+                            "value": "asc"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Get Contact by ID",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{ACCESS_TOKEN}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{BASE_URL}}/contacts/{{CONTACT_ID}}",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "contacts",
+                        "{{CONTACT_ID}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Contact (with new photo)",
+            "request": {
+                "method": "PATCH",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{ACCESS_TOKEN}}"
+                    }
+                ],
+                "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                        {
+                            "key": "name",
+                            "value": "Updated John",
+                            "type": "text"
+                        },
+                        {
+                            "key": "photo",
+                            "type": "file",
+                            "src": "path/to/new-photo.jpg"
+                        }
+                    ]
+                },
+                "url": {
+                    "raw": "{{BASE_URL}}/contacts/{{CONTACT_ID}}",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "contacts",
+                        "{{CONTACT_ID}}"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Contact",
+            "request": {
+                "method": "DELETE",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{ACCESS_TOKEN}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{BASE_URL}}/contacts/{{CONTACT_ID}}",
+                    "host": [
+                        "{{BASE_URL}}"
+                    ],
+                    "path": [
+                        "contacts",
+                        "{{CONTACT_ID}}"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "BASE_URL",
+            "value": "http://localhost:3000"
+        },
+        {
+            "key": "ACCESS_TOKEN",
+            "value": ""
+        },
+        {
+            "key": "CONTACT_ID",
+            "value": ""
+        }
+    ]
+}

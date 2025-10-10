@@ -31,7 +31,6 @@ export const login = async ({ email, password }) => {
   const matched = await bcrypt.compare(password, user.password);
   if (!matched) throw createHttpError(401, "Invalid credentials");
 
- 
   await Session.deleteMany({ userId: user._id });
 
   const {
@@ -65,7 +64,6 @@ export const refresh = async (oldRefreshToken) => {
   const oldSession = await Session.findOne({ refreshToken: oldRefreshToken });
   if (!oldSession) throw createHttpError(401, "Invalid session or token");
 
- 
   await Session.deleteOne({ _id: oldSession._id });
 
   const {
@@ -92,4 +90,21 @@ export const logout = async (oldRefreshToken) => {
   await Session.findOneAndDelete({ refreshToken: oldRefreshToken });
 
   return { message: "Logged out successfully" };
+};
+
+// 🔹 Нові методи для reset-password
+
+export const updatePassword = async (userId, newPassword) => {
+  const user = await User.findById(userId);
+  if (!user) throw createHttpError(404, "User not found");
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
+
+  return user;
+};
+
+export const deleteUserSessions = async (userId) => {
+  await Session.deleteMany({ userId });
 };
