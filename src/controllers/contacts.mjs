@@ -54,7 +54,7 @@ export const getContactById = async (req, res, next) => {
 // POST /contacts
 export const createContact = async (req, res, next) => {
   try {
-    // ✅ якщо є фото — додаємо шлях з Cloudinary
+    
     if (req.file && req.file.path) {
       req.body.photo = req.file.path;
     }
@@ -76,7 +76,6 @@ export const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
 
-    // ✅ якщо оновлюємо фото
     if (req.file && req.file.path) {
       req.body.photo = req.file.path;
     }
