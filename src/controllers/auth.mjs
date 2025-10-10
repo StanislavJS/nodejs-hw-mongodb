@@ -1,11 +1,11 @@
 import * as authService from "../services/auth.mjs";
 import createHttpError from "http-errors";
 
-/// ✅ Нові контролери
+
 export { sendResetEmailController } from "./auth/sendResetEmail.mjs";
 export { resetPasswordController } from "./auth/resetPassword.mjs";
 
-// Налаштування cookie
+
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",

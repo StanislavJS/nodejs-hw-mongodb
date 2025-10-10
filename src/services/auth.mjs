@@ -92,7 +92,7 @@ export const logout = async (oldRefreshToken) => {
   return { message: "Logged out successfully" };
 };
 
-// 🔹 Нові методи для reset-password
+//reset-password
 
 export const updatePassword = async (userId, newPassword) => {
   const user = await User.findById(userId);

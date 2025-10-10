@@ -8,26 +8,25 @@ export const sendResetEmailController = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    // 1️⃣ Перевірка введених даних
+    
     if (!email) {
       throw createHttpError(400, "Email is required.");
     }
 
-    // 2️⃣ Перевіряємо, чи існує користувач
     const user = await userService.findByEmail(email);
     if (!user) {
       throw createHttpError(404, "User not found!");
     }
 
-    // 3️⃣ Створюємо JWT токен для reset-password
+    // JWT  reset-password
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
 
-    // 4️⃣ Перевірка SMTP-конфігурації
+  
     if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
       throw createHttpError(500, "SMTP configuration is missing.");
     }
 
-    // 5️⃣ Налаштування транспорту
+    
     const transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
@@ -38,11 +37,10 @@ export const sendResetEmailController = async (req, res, next) => {
     });
 
 
-    // 6️⃣ Посилання з токеном
+    
     const resetLink = `http://localhost:3000/reset-password?token=${encodeURIComponent(token)}`;
 
     
-    // 7️⃣ Надсилаємо лист
     try {
       await transport.sendMail({
         from: process.env.SMTP_FROM,
@@ -64,7 +62,6 @@ export const sendResetEmailController = async (req, res, next) => {
       throw createHttpError(500, "Failed to send the email, please try again later.");
     }
 
-    // 8️⃣ Відповідь
     res.status(200).json({
       status: 200,
       message: "Reset password email has been successfully sent.",
