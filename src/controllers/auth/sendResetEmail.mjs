@@ -37,10 +37,10 @@ export const sendResetEmailController = async (req, res, next) => {
     });
 
 
-    
-    const resetLink = `http://localhost:3000/reset-password?token=${encodeURIComponent(token)}`;
 
-    
+    const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${encodeURIComponent(token)}`;
+
+
     try {
       await transport.sendMail({
         from: process.env.SMTP_FROM,
