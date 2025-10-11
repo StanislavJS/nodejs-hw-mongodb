@@ -38,6 +38,15 @@ export const sendResetEmailController = async (req, res, next) => {
       });
     }
 
+    if (process.env.RENDER === "true") {
+      console.warn("📩 Render environment detected — skipping real email send.");
+      return res.status(200).json({
+      status: 200,
+      message: "Simulated reset email (Render does not support SMTP).",
+      data: { resetLink },
+      });
+      }
+
     const transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
