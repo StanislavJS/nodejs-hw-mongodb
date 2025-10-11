@@ -8,7 +8,6 @@ export const sendResetEmailController = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    
     if (!email) {
       throw createHttpError(400, "Email is required.");
     }
@@ -18,15 +17,27 @@ export const sendResetEmailController = async (req, res, next) => {
       throw createHttpError(404, "User not found!");
     }
 
-    // JWT  reset-password
+    // JWT for password reset (valid 5 min)
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
 
-  
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD || !process.env.SMTP_FROM) {
-      throw createHttpError(500, "SMTP configuration is missing.");
+    const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${encodeURIComponent(token)}`;
+
+    if (
+      !process.env.SMTP_HOST ||
+      !process.env.SMTP_USER ||
+      !process.env.SMTP_PASSWORD ||
+      !process.env.SMTP_FROM
+    ) {
+      console.warn("⚠️ SMTP configuration missing. Email not sent, returning reset link for testing:");
+      console.warn(resetLink);
+
+      return res.status(200).json({
+        status: 200,
+        message: "SMTP not configured — simulated reset email response.",
+        data: { resetLink },
+      });
     }
 
-    
     const transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
@@ -35,11 +46,6 @@ export const sendResetEmailController = async (req, res, next) => {
         pass: process.env.SMTP_PASSWORD,
       },
     });
-
-
-
-    const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${encodeURIComponent(token)}`;
-
 
     try {
       await transport.sendMail({
@@ -50,8 +56,8 @@ export const sendResetEmailController = async (req, res, next) => {
           <div style="font-family: Arial, sans-serif; line-height: 1.6;">
             <h2>Password Reset Request</h2>
             <p>You requested a password reset. Click the button below to set a new password:</p>
-            <a href="${resetLink}" 
-               style="display: inline-block; padding: 10px 20px; background: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">
+            <a href="${resetLink}"
+               style="display:inline-block;padding:10px 20px;background:#007bff;color:#fff;text-decoration:none;border-radius:5px;">
               Reset Password
             </a>
             <p>If you didn’t request this, please ignore this email.</p>
@@ -59,6 +65,7 @@ export const sendResetEmailController = async (req, res, next) => {
         `,
       });
     } catch (err) {
+      console.error("❌ Failed to send email:", err.message);
       throw createHttpError(500, "Failed to send the email, please try again later.");
     }
 
