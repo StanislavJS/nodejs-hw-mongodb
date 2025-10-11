@@ -19,33 +19,26 @@ export const sendResetEmailController = async (req, res, next) => {
 
     // JWT for password reset (valid 5 min)
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
-
     const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${encodeURIComponent(token)}`;
 
-    if (
-      !process.env.SMTP_HOST ||
-      !process.env.SMTP_USER ||
-      !process.env.SMTP_PASSWORD ||
-      !process.env.SMTP_FROM
-    ) {
-      console.warn("⚠️ SMTP configuration missing. Email not sent, returning reset link for testing:");
+
+    const canSendEmail =
+      process.env.SMTP_HOST &&
+      process.env.SMTP_USER &&
+      process.env.SMTP_PASSWORD &&
+      process.env.SMTP_FROM &&
+      process.env.RENDER !== "true";
+
+    if (!canSendEmail) {
+      console.warn("⚠️ SMTP not configured or Render environment — returning reset link for testing:");
       console.warn(resetLink);
 
       return res.status(200).json({
         status: 200,
-        message: "SMTP not configured — simulated reset email response.",
+        message: "Simulated reset email (SMTP not configured or Render environment).",
         data: { resetLink },
       });
     }
-
-    if (process.env.RENDER === "true") {
-      console.warn("📩 Render environment detected — skipping real email send.");
-      return res.status(200).json({
-      status: 200,
-      message: "Simulated reset email (Render does not support SMTP).",
-      data: { resetLink },
-      });
-      }
 
     const transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
