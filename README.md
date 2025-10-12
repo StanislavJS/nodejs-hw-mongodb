@@ -1,88 +1,180 @@
-hw5-auth
-A REST API for managing contacts with JWT authentication and refresh tokens.
+# 📧 Node.js REST API — Contacts App (with Auth, Email Reset & Images)
 
-## Features
+## 🚀 Project Overview
+
+This project is a **Node.js REST API** built with **Express**, **MongoDB**, and **JWT authentication**.
+It supports:
 
 - User registration and login
-- JWT access and refresh token authentication
-- CRUD operations for contacts
-- Environment-based configuration
-- Fully tested API endpoints
+- JWT-based authentication
+- Password reset via email
+- Contact management (CRUD)
+- Image upload with `multer`
+- Deployment on **Render**
 
-## Technologies
+---
 
-- Node.js
-- Express.js
-- MongoDB
-- JWT for authentication
-- dotenv for environment variables
-- Render for deployment
+## 🧩 Features
 
-## Environment Variables
+### 🔐 Authentication
 
-Create a `.env` file locally with the following variables:
+- User registration (`/auth/register`)
+- User login (`/auth/login`)
+- Token refresh (`/auth/refresh`)
+- Logout (`/auth/logout`)
+
+### 📩 Password Reset
+
+- Request password reset (`/auth/send-reset-email`)
+- Reset password with a valid token (`/auth/reset-password`)
+
+### 👥 Contacts
+
+- Get all contacts (`GET /contacts`)
+- Get contact by ID (`GET /contacts/:id`)
+- Create new contact (`POST /contacts`)
+- Update contact (`PATCH /contacts/:id`)
+- Delete contact (`DELETE /contacts/:id`)
+
+### 🖼️ Image Upload
+
+- Add or update a contact with an uploaded image using **multipart/form-data**
+
+---
+
+## ⚙️ Technologies Used
+
+- **Node.js**
+- **Express**
+- **MongoDB + Mongoose**
+- **JWT (jsonwebtoken)**
+- **Nodemailer** (email sending)
+- **Multer** (file uploads)
+- **Render** (deployment)
+
+---
+
+## 🧠 Password Reset Logic
+
+1. **POST `/auth/send-reset-email`**
+   - User sends their email.
+   - API generates a **JWT token (valid for 5 minutes)**.
+   - A reset link is generated:
+
+     ```
+     https://your-app.onrender.com/reset-password?token=...
+     ```
+
+   - If deployed on Render, email sending is **skipped** (Render blocks SMTP) —
+     but the **reset link is returned in the response** for testing.
+
+2. **PATCH `/auth/reset-password`**
+   - User submits a new password and token.
+   - Token is verified and the user’s password is updated.
+
+---
+
+## 🔧 Environment Variables
+
+Create a `.env` file in the project root with:
 
 ```env
-MONGO_URI=mongodb://localhost:27017/yourDatabaseName
 PORT=3000
-JWT_ACCESS_SECRET=<your_jwt_access_secret>
-JWT_REFRESH_SECRET=<your_jwt_refresh_secret>
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+
+# Email (local SMTP)
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_USER=your_brevo_user
+SMTP_PASSWORD=your_brevo_api_key
+SMTP_FROM=your_verified_email@example.com
+
+# App domain
+APP_DOMAIN=https://nodejs-hw-mongodb-0l3e.onrender.com
+
+# To skip email sending on Render
+RENDER=true
 ```
 
-On **Render**, add the following environment variables in the dashboard:
+---
 
-- `MONGO_URI` → your MongoDB URI
-- `PORT` → 3000
-- `JWT_ACCESS_SECRET` → your generated access secret
-- `JWT_REFRESH_SECRET` → your generated refresh secret
+## 🧪 Testing with Postman
 
-## Scripts
+### 🔑 Auth
+
+- `POST /auth/register` — register new user
+- `POST /auth/login` — login and get tokens
+- `POST /auth/refresh` — refresh access token
+
+### 📩 Password Reset
+
+- `POST /auth/send-reset-email`
+  Send body:
+
+  ```json
+  { "email": "user@example.com" }
+  ```
+
+  ✅ Returns a reset link or sends an email.
+
+- `PATCH /auth/reset-password`
+
+  ```json
+  {
+    "token": "your_jwt_token",
+    "password": "newSecurePassword123"
+  }
+  ```
+
+### 👥 Contacts
+
+All contacts routes require **Bearer token**:
+
+- `GET /contacts`
+- `GET /contacts/:contactId`
+- `POST /contacts` (use `multipart/form-data` for image)
+- `PATCH /contacts/:contactId`
+- `DELETE /contacts/:contactId`
+
+---
+
+## 🧰 Development
 
 ```bash
-# Install dependencies
 npm install
-
-# Run locally
 npm run dev
+```
 
-# Run tests (if any)
-npm test
+For production:
 
-# Build for production
-npm run build
-
-# Start production server
+```bash
 npm start
 ```
 
-## API Endpoints
+---
 
-- `POST /auth/register` — register a new user
-- `POST /auth/login` — login user
-- `POST /auth/refresh` — refresh JWT tokens
-- `POST /auth/logout` — logout user
-- `GET /contacts` — list contacts
-- `POST /contacts` — create a contact
-- `GET /contacts/:id` — get contact by ID
-- `PATCH /contacts/:id` — update contact by ID
-- `DELETE /contacts/:id` — delete contact by ID
+## 🌍 Deployment
 
-## Deployment
+- **Platform:** Render
+- **Environment:** Node.js 18+
+- **Build Command:**
 
-This project can be deployed on [Render](https://render.com). Make sure to set the environment variables as listed above.
+  ```
+  npm install
+  ```
 
-## License
+- **Start Command:**
 
-MIT
-
-```
-
-
-## Author
-
-Stanislav Tatarchuk – Vilnius, Lithuania
-GitHub: [https://github.com/StanislavJS](https://github.com/StanislavJS)
-Email: [stasyk55@gmail.com](mailto:stasyk55@gmail.com)
+  ```
+  npm start
+  ```
 
 ---
-```
+
+## 🧾 License
+
+MIT © 2025 Stanislav Tatarchuk
+Vilnius, Lithuania
+
+---

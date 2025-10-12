@@ -19,10 +19,19 @@ export const sendResetEmailController = async (req, res, next) => {
 
     // JWT for password reset (valid 5 min)
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
-
     const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${encodeURIComponent(token)}`;
 
-    
+    // 🟡 If running on Render — skip real email sending
+    if (process.env.RENDER === "true") {
+      console.warn("📩 Render environment detected — skipping real email sending.");
+      return res.status(200).json({
+        status: 200,
+        message: "Simulated reset email (Render does not support external SMTP).",
+        data: { resetLink },
+      });
+    }
+
+    // 🟢 Check SMTP config
     if (
       !process.env.SMTP_HOST ||
       !process.env.SMTP_USER ||
@@ -39,10 +48,11 @@ export const sendResetEmailController = async (req, res, next) => {
       });
     }
 
-    
+    // 🟢 Send email via Nodemailer (local/dev only)
     const transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
+      secure: false,
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD,
