@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/StanislavJS/nodejs-hw-mongodb#readme",
   "dependencies": {
+    "@sendinblue/client": "^3.3.1",
     "bcrypt": "^6.0.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^1.41.3",

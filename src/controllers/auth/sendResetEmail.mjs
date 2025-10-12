@@ -19,27 +19,27 @@ export const sendResetEmailController = async (req, res, next) => {
 
     // JWT for password reset (valid 5 min)
     const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
+
     const resetLink = `${process.env.APP_DOMAIN}/reset-password?token=${encodeURIComponent(token)}`;
 
-
-    const canSendEmail =
-      process.env.SMTP_HOST &&
-      process.env.SMTP_USER &&
-      process.env.SMTP_PASSWORD &&
-      process.env.SMTP_FROM &&
-      process.env.RENDER !== "true";
-
-    if (!canSendEmail) {
-      console.warn("⚠️ SMTP not configured or Render environment — returning reset link for testing:");
+    
+    if (
+      !process.env.SMTP_HOST ||
+      !process.env.SMTP_USER ||
+      !process.env.SMTP_PASSWORD ||
+      !process.env.SMTP_FROM
+    ) {
+      console.warn("⚠️ SMTP configuration missing. Email not sent, returning reset link for testing:");
       console.warn(resetLink);
 
       return res.status(200).json({
         status: 200,
-        message: "Simulated reset email (SMTP not configured or Render environment).",
+        message: "SMTP not configured — simulated reset email response.",
         data: { resetLink },
       });
     }
 
+    
     const transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
