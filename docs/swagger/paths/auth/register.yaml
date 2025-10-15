@@ -1,0 +1,23 @@
+tags:
+  - Auth
+summary: Register a new user
+operationId: registerUser
+requestBody:
+  description: User registration payload
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          email:
+            type: string
+            example: user@example.com
+          password:
+            type: string
+            example: qwerty123
+responses:
+  201:
+    description: User created successfully
+  400:
+    $ref: '../../components/responses/BadRequest.yaml'

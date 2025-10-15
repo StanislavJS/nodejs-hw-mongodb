@@ -1,0 +1,29 @@
+# swagger/components/parameters/queryParamsContacts.yaml
+
+name: contactsQuery
+in: query
+required: false
+schema:
+  type: object
+  properties:
+    page:
+      type: integer
+      example: 1
+    perPage:
+      type: integer
+      example: 10
+    sortBy:
+      type: string
+      example: 'name'
+    sortOrder:
+      type: string
+      enum: ['asc', 'desc']
+      example: 'asc'
+    type:
+      type: string
+      enum: ['work', 'home', 'personal']
+      example: 'personal'
+    isFavourite:
+      type: boolean
+      example: false
+description: Query params (page, perPage, sortBy, sortOrder, type, isFavourite)

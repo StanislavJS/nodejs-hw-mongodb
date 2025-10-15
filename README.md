@@ -1,152 +1,118 @@
-# 📧 Node.js REST API — Contacts App (with Auth, Email Reset & Images)
+## 🧾 README for HW7-Swagger
 
-## 🚀 Project Overview
+# HW7: Swagger API Documentation
 
-This project is a **Node.js REST API** built with **Express**, **MongoDB**, and **JWT authentication**.
-It supports:
+This project implements a RESTful API for managing contacts with authentication and Swagger documentation.
 
-- User registration and login
-- JWT-based authentication
-- Password reset via email
-- Contact management (CRUD)
-- Image upload with `multer`
-- Deployment on **Render**
+## 🚀 Features
 
----
-
-## 🧩 Features
-
-### 🔐 Authentication
-
-- User registration (`/auth/register`)
-- User login (`/auth/login`)
-- Token refresh (`/auth/refresh`)
-- Logout (`/auth/logout`)
-
-### 📩 Password Reset
-
-- Request password reset (`/auth/send-reset-email`)
-- Reset password with a valid token (`/auth/reset-password`)
-
-### 👥 Contacts
-
-- Get all contacts (`GET /contacts`)
-- Get contact by ID (`GET /contacts/:id`)
-- Create new contact (`POST /contacts`)
-- Update contact (`PATCH /contacts/:id`)
-- Delete contact (`DELETE /contacts/:id`)
-
-### 🖼️ Image Upload
-
-- Add or update a contact with an uploaded image using **multipart/form-data**
+- **User Authentication** (Register, Login with JWT tokens)
+- **Contacts CRUD operations**
+- **MongoDB integration**
+- **Swagger UI** available at `/api-docs`
+- **Secure routes** using Bearer tokens
+- **Email notifications via Brevo (SMTP)**
+- **Image uploads via Cloudinary**
+- **Environment variables support**
 
 ---
 
-## ⚙️ Technologies Used
+## 🛠️ Tech Stack
 
 - **Node.js**
-- **Express**
+- **Express.js**
 - **MongoDB + Mongoose**
-- **JWT (jsonwebtoken)**
-- **Nodemailer** (email sending)
-- **Multer** (file uploads)
-- **Render** (deployment)
+- **JWT Authentication**
+- **Swagger (OpenAPI 3.0)**
+- **Pino** for logging
+- **Brevo (Sendinblue)** for email sending
+- **Cloudinary** for image storage
 
 ---
 
-## 🧠 Password Reset Logic
+## 📁 Project structure
 
-1. **POST `/auth/send-reset-email`**
-   - User sends their email.
-   - API generates a **JWT token (valid for 5 minutes)**.
-   - A reset link is generated:
+```
 
-     ```
-     https://your-app.onrender.com/reset-password?token=...
-     ```
+src/
+├── controllers/
+├── models/
+├── routes/
+├── services/
+├── middlewares/
+├── validators/
+├── docs/
+│   ├── openapi.yaml
+│   ├── swagger.json
+│   └── swagger/
+└── index.mjs
 
-   - If deployed on Render, email sending is **skipped** (Render blocks SMTP) —
-     but the **reset link is returned in the response** for testing.
-
-2. **PATCH `/auth/reset-password`**
-   - User submits a new password and token.
-   - Token is verified and the user’s password is updated.
-
----
-
-## 🔧 Environment Variables
-
-Create a `.env` file in the project root with:
-
-```env
-PORT=3000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
-
-# Email (local SMTP)
-SMTP_HOST=smtp-relay.brevo.com
-SMTP_PORT=587
-SMTP_USER=your_brevo_user
-SMTP_PASSWORD=your_brevo_api_key
-SMTP_FROM=your_verified_email@example.com
-
-# App domain
-APP_DOMAIN=https://nodejs-hw-mongodb-0l3e.onrender.com
-
-# To skip email sending on Render
-RENDER=true
 ```
 
 ---
 
-## 🧪 Testing with Postman
+## ⚙️ Environment variables (.env)
 
-### 🔑 Auth
+```
 
-- `POST /auth/register` — register new user
-- `POST /auth/login` — login and get tokens
-- `POST /auth/refresh` — refresh access token
+# Server
 
-### 📩 Password Reset
+PORT=3000
 
-- `POST /auth/send-reset-email`
-  Send body:
+# MongoDB
 
-  ```json
-  { "email": "user@example.com" }
-  ```
+MONGODB_USER=yourUser
+MONGODB_PASSWORD=yourPassword
+MONGODB_URL=yourClusterURL
+MONGODB_DB=contactsdb
 
-  ✅ Returns a reset link or sends an email.
+# JWT secret
 
-- `PATCH /auth/reset-password`
+JWT_SECRET=yourJWTsecret
 
-  ```json
-  {
-    "token": "your_jwt_token",
-    "password": "newSecurePassword123"
-  }
-  ```
+# Application domain
 
-### 👥 Contacts
+APP_DOMAIN=[https://your-app-name.onrender.com/auth](https://your-app-name.onrender.com/auth)
 
-All contacts routes require **Bearer token**:
+# SMTP (Brevo)
 
-- `GET /contacts`
-- `GET /contacts/:contactId`
-- `POST /contacts` (use `multipart/form-data` for image)
-- `PATCH /contacts/:contactId`
-- `DELETE /contacts/:contactId`
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_USER=your_brevo_login
+SMTP_PASSWORD=your_brevo_smtp_key
+SMTP_FROM=your_brevo_email
+
+# Cloudinary
+
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_secret
+
+```
 
 ---
 
-## 🧰 Development
+## 🧰 Available Scripts
+
+### Start in development mode
 
 ```bash
-npm install
 npm run dev
 ```
 
-For production:
+### Build Swagger docs
+
+```bash
+npm run build-docs
+```
+
+### Preview Swagger locally
+
+```bash
+npm run preview-docs
+```
+
+### Run production build
 
 ```bash
 npm start
@@ -154,27 +120,65 @@ npm start
 
 ---
 
-## 🌍 Deployment
+## 🧪 Endpoints Overview
 
-- **Platform:** Render
-- **Environment:** Node.js 18+
-- **Build Command:**
-
-  ```
-  npm install
-  ```
-
-- **Start Command:**
-
-  ```
-  npm start
-  ```
+| Method | Endpoint         | Description         | Auth Required |
+| ------ | ---------------- | ------------------- | ------------- |
+| POST   | `/auth/register` | Register new user   | ❌            |
+| POST   | `/auth/login`    | Login and get token | ❌            |
+| GET    | `/contacts`      | Get all contacts    | ✅            |
+| POST   | `/contacts`      | Create contact      | ✅            |
+| GET    | `/contacts/{id}` | Get contact by ID   | ✅            |
+| PATCH  | `/contacts/{id}` | Update contact      | ✅            |
+| DELETE | `/contacts/{id}` | Delete contact      | ✅            |
 
 ---
 
-## 🧾 License
+## 🧩 Swagger Documentation
 
-MIT © 2025 Stanislav Tatarchuk
-Vilnius, Lithuania
+After deployment, you can open your API documentation at:
+
+```
+https://your-app-name.onrender.com/api-docs
+```
 
 ---
+
+## ☁️ Deployment (Render)
+
+### Steps:
+
+1. Push your branch `hw7-swagger` to GitHub.
+2. Create a new **Render Web Service**.
+3. Connect your GitHub repo.
+4. Select `main` branch.
+5. Set **Build Command:**
+
+   ```
+   npm install && npm run build-docs
+   ```
+
+6. Set **Start Command:**
+
+   ```
+   npm start
+   ```
+
+7. Add **Environment Variables** (see list below).
+
+---
+
+## ✅ Status
+
+- [x] Auth routes working
+- [x] Contacts CRUD
+- [x] JWT authorization
+- [x] MongoDB connected
+- [x] Swagger docs available
+- [x] Ready for deployment
+
+---
+
+## 📄 License
+
+MIT License © 2025 Stanislav Tatarchuk

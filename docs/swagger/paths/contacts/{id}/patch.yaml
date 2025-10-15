@@ -1,0 +1,19 @@
+tags:
+  - Contacts
+summary: Update contact by ID
+operationId: updateContact
+parameters:
+  - $ref: '../../../components/parameters/contactId.yaml'
+security:
+  - bearerAuth: []
+requestBody:
+  $ref: '../../../components/parameters/requestBodies/ContactCreate.yaml'
+responses:
+  200:
+    description: Contact updated
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas/contact.yaml'
+  400:
+    $ref: '../../../components/responses/BadRequest.yaml'

@@ -1,0 +1,11 @@
+# swagger/components/responses/NotFound.yaml
+
+description: Resource not found
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Resource not found

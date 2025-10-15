@@ -1,0 +1,8 @@
+# swagger/components/parameters/contactId.yaml
+name: contactId
+in: path
+required: true
+description: Unique contact identifier
+schema:
+  type: string
+  example: 60d0fe4f5311236168a109ca

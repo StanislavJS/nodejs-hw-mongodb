@@ -1,0 +1,53 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Contacts API
+  description: API for managing contacts, authentication, and file uploads.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  - url: http://localhost:3000
+  - url: https://nodejs-hw-mongodb-0l3e.onrender.com
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+  responses:
+    NotFound:
+      $ref: './swagger/components/responses/NotFound.yaml'
+    BadRequest:
+      $ref: './swagger/components/responses/BadRequest.yaml'
+
+  schemas:
+    Contact:
+      $ref: './swagger/components/schemas/contact.yaml'
+    ContactsListMeta:
+      $ref: './swagger/components/schemas/ContactsListMeta.yaml'
+
+  parameters:
+    ContactId:
+      $ref: './swagger/components/parameters/contactId.yaml'
+
+  requestBodies:
+    ContactCreate:
+      $ref: './swagger/components/parameters/requestBodies/ContactCreate.yaml'
+
+paths:
+  /contacts:
+    get:
+      $ref: './swagger/paths/contacts/get.yaml'
+    post:
+      $ref: './swagger/paths/contacts/post.yaml'
+
+  /contacts/{contactId}:
+    get:
+      $ref: './swagger/paths/contacts/{id}/get.yaml'
+    patch:
+      $ref: './swagger/paths/contacts/{id}/patch.yaml'
+    delete:
+      $ref: './swagger/paths/contacts/{id}/delete.yaml'
