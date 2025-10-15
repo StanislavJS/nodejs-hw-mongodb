@@ -124,8 +124,8 @@ npm start
 
 | Method | Endpoint         | Description         | Auth Required |
 | ------ | ---------------- | ------------------- | ------------- |
-| POST   | `/auth/register` | Register new user   | ❌            |
-| POST   | `/auth/login`    | Login and get token | ❌            |
+| POST   | `/auth/register` | Register new user   | ✅            |
+| POST   | `/auth/login`    | Login and get token | ✅            |
 | GET    | `/contacts`      | Get all contacts    | ✅            |
 | POST   | `/contacts`      | Create contact      | ✅            |
 | GET    | `/contacts/{id}` | Get contact by ID   | ✅            |

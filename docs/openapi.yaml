@@ -38,6 +38,13 @@ components:
       $ref: './swagger/components/parameters/requestBodies/ContactCreate.yaml'
 
 paths:
+  /auth/register:
+    post:
+      $ref: './swagger/paths/auth/register.yaml'
+  /auth/login:
+    post:
+      $ref: './swagger/paths/auth/login.yaml'
+
   /contacts:
     get:
       $ref: './swagger/paths/contacts/get.yaml'
