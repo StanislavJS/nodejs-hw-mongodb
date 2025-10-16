@@ -1,22 +1,52 @@
+summary: Get all contacts
 tags:
   - Contacts
-summary: Get all contacts
-operationId: getContacts
 security:
   - bearerAuth: []
+parameters:
+  - in: query
+    name: page
+    schema:
+      type: integer
+      example: 1
+  - in: query
+    name: perPage
+    schema:
+      type: integer
+      example: 10
+  - in: query
+    name: sortBy
+    schema:
+      type: string
+      enum: [name, email, createdAt]
+  - in: query
+    name: sortOrder
+    schema:
+      type: string
+      enum: [asc, desc]
 responses:
-  200:
+  '200':
     description: List of contacts
     content:
       application/json:
         schema:
           type: object
           properties:
+            status:
+              type: string
+              example: success
+            message:
+              type: string
+              example: Contacts fetched successfully
             data:
-              type: array
-              items:
-                $ref: '../../components/schemas/contact.yaml'
-            meta:
-              $ref: '../../components/schemas/ContactsListMeta.yaml'
-  401:
-    $ref: '../../components/responses/BadRequest.yaml'
+              type: object
+              properties:
+                contacts:
+                  type: array
+                  items:
+                    $ref: '../../components/schemas/Contact.yaml'
+                total:
+                  type: integer
+                  example: 20
+  '401':
+    description: Unauthorized

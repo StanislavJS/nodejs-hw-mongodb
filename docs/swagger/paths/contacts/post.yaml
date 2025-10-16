@@ -1,17 +1,43 @@
+summary: Create new contact
 tags:
   - Contacts
-summary: Create a new contact
-operationId: createContact
 security:
   - bearerAuth: []
 requestBody:
-  $ref: '../../components/parameters/requestBodies/ContactCreate.yaml'
+  required: true
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+          email:
+            type: string
+          phoneNumber:
+            type: string
+          favorite:
+            type: boolean
+          photo:
+            type: string
+            format: binary
 responses:
-  201:
-    description: Contact created successfully
+  '201':
+    description: Contact created
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas/contact.yaml'
-  400:
-    $ref: '../../components/responses/BadRequest.yaml'
+          type: object
+          properties:
+            status:
+              type: string
+              example: success
+            message:
+              type: string
+              example: Contact created successfully
+            data:
+              $ref: '../../components/schemas/Contact.yaml'
+  '400':
+    description: Bad request
+  '401':
+    description: Unauthorized

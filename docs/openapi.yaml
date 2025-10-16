@@ -25,9 +25,7 @@ components:
 
   schemas:
     Contact:
-      $ref: './swagger/components/schemas/contact.yaml'
-    ContactsListMeta:
-      $ref: './swagger/components/schemas/ContactsListMeta.yaml'
+      $ref: './swagger/components/schemas/Contact.yaml'
 
   parameters:
     ContactId:

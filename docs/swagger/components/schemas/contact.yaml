@@ -4,16 +4,24 @@ type: object
 properties:
   _id:
     type: string
-    example: 60d0fe4f5311236168a109ca
+    example: 670e8e2442c45b2f1b8d04a7
   name:
     type: string
-    example: John Doe
+    example: 'John Doe'
   email:
     type: string
-    example: john.doe@example.com
+    example: 'john@example.com'
   phoneNumber:
     type: string
-    example: +1234567890
+    example: '+380971112233'
   favorite:
     type: boolean
-    example: true
+    example: false
+  photo:
+    type: string
+    example: 'https://res.cloudinary.com/demo/image/upload/v1700000000/sample.jpg'
+required:
+  - _id
+  - name
+  - email
+  - phoneNumber

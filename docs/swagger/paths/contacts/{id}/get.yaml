@@ -1,17 +1,25 @@
+summary: Get contact by ID
 tags:
   - Contacts
-summary: Get contact by ID
-operationId: getContactById
-parameters:
-  - $ref: '../../../components/parameters/contactId.yaml'
 security:
   - bearerAuth: []
+parameters:
+  - $ref: '../../../components/parameters/contactId.yaml'
 responses:
-  200:
+  '200':
     description: Contact found
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas/contact.yaml'
-  404:
-    $ref: '../../../components/responses/NotFound.yaml'
+          type: object
+          properties:
+            status:
+              type: string
+              example: success
+            message:
+              type: string
+              example: Contact fetched successfully
+            data:
+              $ref: '../../../components/schemas/Contact.yaml'
+  '404':
+    description: Contact not found
