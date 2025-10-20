@@ -532,15 +532,15 @@
     },
     "schemas": {
       "Contact": {
-        "type": "object",
+        "ttype": "object",
         "properties": {
           "_id": {
             "type": "string",
-            "example": "670e8e2442c45b2f1b8d04a7"
+            "example": "68ec8fd0937082e15326472c"
           },
           "name": {
             "type": "string",
-            "example": "John Doe"
+            "example": "John Peter"
           },
           "email": {
             "type": "string",
@@ -548,22 +548,48 @@
           },
           "phoneNumber": {
             "type": "string",
-            "example": 380971112233
+            "example": 123456789
           },
-          "favorite": {
+          "isFavourite": {
             "type": "boolean",
-            "example": false
+            "example": true
+          },
+          "contactType": {
+            "type": "string",
+            "example": "work"
           },
           "photo": {
             "type": "string",
-            "example": "https://res.cloudinary.com/demo/image/upload/v1700000000/sample.jpg"
+            "example": "https://res.cloudinary.com/db8freoyu/image/upload/v1760333775/contacts_photos/o64hjmwqvkw80uhy2hnn.png"
+          },
+          "userId": {
+            "type": "string",
+            "example": "68e8b5b806a236c0ce96902e"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-10-13T05:36:16.501Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-10-13T05:36:16.501Z"
+          },
+          "__v": {
+            "type": "integer",
+            "example": 0
           }
         },
         "required": [
           "_id",
           "name",
           "email",
-          "phoneNumber"
+          "phoneNumber",
+          "isFavourite",
+          "contactType",
+          "photo",
+          "userId"
         ]
       }
     },
