@@ -1,6 +1,7 @@
-summary: Create new contact
 tags:
   - Contacts
+summary: Create a new contact
+operationId: createContact
 security:
   - bearerAuth: []
 requestBody:
@@ -12,12 +13,16 @@ requestBody:
         properties:
           name:
             type: string
+            example: John Doe
           email:
             type: string
+            example: john@example.com
           phoneNumber:
             type: string
+            example: '+380971112233'
           favorite:
             type: boolean
+            example: false
           photo:
             type: string
             format: binary
@@ -38,6 +43,4 @@ responses:
             data:
               $ref: '../../components/schemas/Contact.yaml'
   '400':
-    description: Bad request
-  '401':
-    description: Unauthorized
+    $ref: '../../components/responses/BadRequest.yaml'

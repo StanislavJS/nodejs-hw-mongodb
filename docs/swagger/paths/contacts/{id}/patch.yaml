@@ -1,6 +1,7 @@
-summary: Update contact by ID
 tags:
   - Contacts
+summary: Update contact by ID
+operationId: updateContact
 security:
   - bearerAuth: []
 parameters:
@@ -14,12 +15,16 @@ requestBody:
         properties:
           name:
             type: string
+            example: Jane Doe
           email:
             type: string
+            example: jane@example.com
           phoneNumber:
             type: string
+            example: '+380971112233'
           favorite:
             type: boolean
+            example: true
           photo:
             type: string
             format: binary
@@ -39,7 +44,18 @@ responses:
               example: Contact updated successfully
             data:
               $ref: '../../../components/schemas/Contact.yaml'
-  '400':
-    description: Bad request
   '404':
     description: Contact not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: Contact not found
+            data:
+              type: 'null'
