@@ -1,6 +1,7 @@
+summary: Create a new contact
+description: Create a new contact for the authenticated user. Request body should be sent as multipart/form-data because it may include an image file.
 tags:
   - Contacts
-summary: Create a new contact
 operationId: createContact
 security:
   - bearerAuth: []
@@ -13,22 +14,27 @@ requestBody:
         properties:
           name:
             type: string
+            description: Contact name
             example: John Doe
           email:
             type: string
+            description: Contact email address
             example: john@example.com
-          phoneNumber:
+          phone:
             type: string
-            example: '+380971112233'
+            description: Contact phone number
+            example: '+380123456789'
           favorite:
             type: boolean
+            description: Mark contact as favorite (optional)
             example: false
           photo:
             type: string
             format: binary
+            description: Contact photo file (optional)
 responses:
   '201':
-    description: Contact created
+    description: Contact successfully created
     content:
       application/json:
         schema:
@@ -43,4 +49,34 @@ responses:
             data:
               $ref: '../../components/schemas/Contact.yaml'
   '400':
-    $ref: '../../components/responses/BadRequest.yaml'
+    description: Invalid request body or missing required fields
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: Bad request
+            data:
+              type: 'null'
+              example: null
+  '401':
+    description: Unauthorized — Missing or invalid token
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Session expired or invalid
+            data:
+              type: 'null'
+              example: null

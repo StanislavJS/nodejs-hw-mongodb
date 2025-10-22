@@ -1,6 +1,7 @@
+summary: Delete contact by ID
+description: Delete a specific contact belonging to the authenticated user by its unique identifier.
 tags:
   - Contacts
-summary: Delete contact by ID
 operationId: deleteContact
 security:
   - bearerAuth: []
@@ -9,6 +10,22 @@ parameters:
 responses:
   '204':
     description: Contact deleted successfully (no content)
+  '401':
+    description: Unauthorized — Missing or invalid token
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Session expired or invalid
+            data:
+              type: 'null'
+              example: null
   '404':
     description: Contact not found
     content:
@@ -24,3 +41,4 @@ responses:
               example: Contact not found
             data:
               type: 'null'
+              example: null

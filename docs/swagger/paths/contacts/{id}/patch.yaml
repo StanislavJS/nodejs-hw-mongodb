@@ -1,6 +1,7 @@
+summary: Update contact by ID
+description: Update contact fields for a specific contact. Supports partial updates and allows updating the contact's photo.
 tags:
   - Contacts
-summary: Update contact by ID
 operationId: updateContact
 security:
   - bearerAuth: []
@@ -15,22 +16,27 @@ requestBody:
         properties:
           name:
             type: string
+            description: Updated contact name
             example: Jane Doe
           email:
             type: string
+            description: Updated contact email
             example: jane@example.com
-          phoneNumber:
+          phone:
             type: string
-            example: '+380971112233'
+            description: Updated contact phone number
+            example: '+380987654321'
           favorite:
             type: boolean
+            description: Updated favorite status
             example: true
           photo:
             type: string
             format: binary
+            description: New contact photo file (optional)
 responses:
   '200':
-    description: Contact updated
+    description: Contact successfully updated
     content:
       application/json:
         schema:
@@ -44,6 +50,38 @@ responses:
               example: Contact updated successfully
             data:
               $ref: '../../../components/schemas/Contact.yaml'
+  '400':
+    description: Invalid data provided or bad request
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: Bad request
+            data:
+              type: 'null'
+              example: null
+  '401':
+    description: Unauthorized — Missing or invalid token
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: Session expired or invalid
+            data:
+              type: 'null'
+              example: null
   '404':
     description: Contact not found
     content:
@@ -59,3 +97,4 @@ responses:
               example: Contact not found
             data:
               type: 'null'
+              example: null

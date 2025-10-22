@@ -1,48 +1,35 @@
-# swagger/components/schemas/contact.yaml
-
-ttype: object
+type: object
 properties:
   _id:
     type: string
-    example: 68ec8fd0937082e15326472c
+    description: Unique contact identifier (MongoDB ObjectId)
+    example: 671a1b92f2435f1ab4d8c123
   name:
     type: string
-    example: John Peter
+    description: Contact name
+    example: John Doe
   email:
     type: string
+    description: Contact email address
     example: john@example.com
-  phoneNumber:
+  phone:
     type: string
-    example: +123456789
-  isFavourite:
+    description: Contact phone number
+    example: '+380123456789'
+  favorite:
     type: boolean
-    example: true
-  contactType:
+    description: Whether the contact is marked as favorite
+    example: false
+  photoURL:
     type: string
-    example: work
-  photo:
-    type: string
-    example: https://res.cloudinary.com/db8freoyu/image/upload/v1760333775/contacts_photos/o64hjmwqvkw80uhy2hnn.png
+    description: URL of the contact's profile photo (if uploaded)
+    example: https://res.cloudinary.com/demo/image/upload/v1723456789/contacts/john_doe.jpg
   userId:
     type: string
-    example: 68e8b5b806a236c0ce96902e
-  createdAt:
-    type: string
-    format: date-time
-    example: 2025-10-13T05:36:16.501Z
-  updatedAt:
-    type: string
-    format: date-time
-    example: 2025-10-13T05:36:16.501Z
-  __v:
-    type: integer
-    example: 0
+    description: ID of the user who owns this contact
+    example: 670c1234f2435f1ab4d8c987
 required:
   - _id
   - name
   - email
-  - phoneNumber
-  - isFavourite
-  - contactType
-  - photo
-  - userId
+  - phone
