@@ -1,5 +1,5 @@
 summary: Create a new contact
-description: Create a new contact for the authenticated user. Request body should be sent as multipart/form-data because it may include an image file.
+description: Create a new contact for the authenticated user.
 tags:
   - Contacts
 operationId: createContact
@@ -14,42 +14,44 @@ requestBody:
         properties:
           name:
             type: string
-            description: Contact name
-            example: John Doe
+            example: Ivan Petrov
+          phoneNumber:
+            type: string
+            example: +380991112233
           email:
             type: string
-            description: Contact email address
-            example: john@example.com
-          phone:
+            example: ivan@example.com
+          contactType:
             type: string
-            description: Contact phone number
-            example: '+380123456789'
-          favorite:
+            example: work
+          isFavourite:
             type: boolean
-            description: Mark contact as favorite (optional)
-            example: false
+            example: true
           photo:
             type: string
             format: binary
-            description: Contact photo file (optional)
+        required:
+          - name
+          - phoneNumber
+          - email
 responses:
   '201':
-    description: Contact successfully created
+    description: Contact created successfully
     content:
       application/json:
         schema:
           type: object
           properties:
             status:
-              type: string
-              example: success
+              type: integer
+              example: 201
             message:
               type: string
               example: Contact created successfully
             data:
               $ref: '../../components/schemas/Contact.yaml'
   '400':
-    description: Invalid request body or missing required fields
+    description: Invalid input data
     content:
       application/json:
         schema:
@@ -60,7 +62,7 @@ responses:
               example: 400
             message:
               type: string
-              example: Bad request
+              example: Invalid input data
             data:
               type: 'null'
               example: null

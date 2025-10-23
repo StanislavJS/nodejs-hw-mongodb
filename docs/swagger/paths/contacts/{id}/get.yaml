@@ -9,15 +9,15 @@ parameters:
   - $ref: '../../../components/parameters/contactId.yaml'
 responses:
   '200':
-    description: Contact found
+    description: Contact found successfully
     content:
       application/json:
         schema:
           type: object
           properties:
             status:
-              type: string
-              example: success
+              type: integer
+              example: 200
             message:
               type: string
               example: Contact fetched successfully

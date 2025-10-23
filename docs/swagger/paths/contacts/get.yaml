@@ -1,5 +1,5 @@
 summary: Get all contacts
-description: Retrieve a list of all user contacts. Supports pagination and filtering by favorite status.
+description: Retrieve all contacts belonging to the authenticated user, with pagination and filtering options.
 tags:
   - Contacts
 operationId: getAllContacts
@@ -13,38 +13,66 @@ parameters:
     schema:
       type: integer
       example: 1
-  - name: limit
+  - name: perPage
     in: query
     description: Number of contacts per page
     required: false
     schema:
       type: integer
-      example: 10
-  - name: favorite
+      example: 5
+  - name: contactType
     in: query
-    description: Filter contacts by favorite status
+    description: Filter contacts by type (e.g., work, home, personal)
+    required: false
+    schema:
+      type: string
+      example: work
+  - name: isFavourite
+    in: query
+    description: Filter contacts by favourite status
     required: false
     schema:
       type: boolean
       example: true
 responses:
   '200':
-    description: Contacts fetched successfully
+    description: Successfully retrieved list of contacts with pagination
     content:
       application/json:
         schema:
           type: object
           properties:
             status:
-              type: string
-              example: success
+              type: integer
+              example: 200
             message:
               type: string
-              example: Contacts fetched successfully
+              example: Successfully found contacts!
             data:
-              type: array
-              items:
-                $ref: '../../components/schemas/Contact.yaml'
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '../../components/schemas/Contact.yaml'
+                page:
+                  type: integer
+                  example: 1
+                perPage:
+                  type: integer
+                  example: 5
+                totalItems:
+                  type: integer
+                  example: 48
+                totalPages:
+                  type: integer
+                  example: 10
+                hasPreviousPage:
+                  type: boolean
+                  example: false
+                hasNextPage:
+                  type: boolean
+                  example: true
   '401':
     description: Unauthorized — Missing or invalid token
     content:

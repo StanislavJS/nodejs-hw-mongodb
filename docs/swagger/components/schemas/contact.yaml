@@ -2,34 +2,38 @@ type: object
 properties:
   _id:
     type: string
-    description: Unique contact identifier (MongoDB ObjectId)
-    example: 671a1b92f2435f1ab4d8c123
+    example: '68dc0d9327099318227ee70b'
   name:
     type: string
-    description: Contact name
-    example: John Doe
+    example: 'Ivan Petrov'
+  phoneNumber:
+    type: string
+    example: '+380991112233'
   email:
     type: string
-    description: Contact email address
-    example: john@example.com
-  phone:
+    example: 'ivan@example.com'
+  contactType:
     type: string
-    description: Contact phone number
-    example: '+380123456789'
-  favorite:
+    example: 'work'
+  isFavourite:
     type: boolean
-    description: Whether the contact is marked as favorite
-    example: false
-  photoURL:
+    example: true
+  photo:
     type: string
-    description: URL of the contact's profile photo (if uploaded)
-    example: https://res.cloudinary.com/demo/image/upload/v1723456789/contacts/john_doe.jpg
+    example: 'https://res.cloudinary.com/demo/image/upload/v1699276892/avatar.png'
   userId:
     type: string
-    description: ID of the user who owns this contact
-    example: 670c1234f2435f1ab4d8c987
+    example: '68dc0d17ef704f12b42033f5'
+  createdAt:
+    type: string
+    format: date-time
+    example: '2025-10-03T18:12:07.560Z'
+  updatedAt:
+    type: string
+    format: date-time
+    example: '2025-10-03T18:12:07.560Z'
 required:
-  - _id
   - name
+  - phoneNumber
   - email
-  - phone
+  - contactType
