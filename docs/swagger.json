@@ -110,7 +110,7 @@
     "/contacts": {
       "get": {
         "summary": "Get all contacts",
-        "description": "Retrieve all contacts belonging to the authenticated user, with pagination and filtering options.",
+        "description": "Retrieve all contacts belonging to the authenticated user, with pagination, filtering and sorting options.",
         "tags": [
           "Contacts"
         ],
@@ -160,6 +160,26 @@
               "type": "boolean",
               "example": true
             }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Field name to sort by (e.g., name, email)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "name"
+            }
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "Sort order direction (asc or desc)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "asc"
+            }
           }
         ],
         "responses": {
@@ -179,14 +199,14 @@
                       "example": "Successfully found contacts!"
                     },
                     "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Contact"
+                      }
+                    },
+                    "meta": {
                       "type": "object",
                       "properties": {
-                        "data": {
-                          "type": "array",
-                          "items": {
-                            "$ref": "#/components/schemas/Contact"
-                          }
-                        },
                         "page": {
                           "type": "integer",
                           "example": 1

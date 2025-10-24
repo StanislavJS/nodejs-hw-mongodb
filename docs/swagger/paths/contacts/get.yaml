@@ -1,5 +1,5 @@
 summary: Get all contacts
-description: Retrieve all contacts belonging to the authenticated user, with pagination and filtering options.
+description: Retrieve all contacts belonging to the authenticated user, with pagination, filtering and sorting options.
 tags:
   - Contacts
 operationId: getAllContacts
@@ -34,6 +34,21 @@ parameters:
     schema:
       type: boolean
       example: true
+  - name: sortBy
+    in: query
+    description: Field name to sort by (e.g., name, email)
+    required: false
+    schema:
+      type: string
+      example: name
+  - name: sortOrder
+    in: query
+    description: Sort order direction (asc or desc)
+    required: false
+    schema:
+      type: string
+      example: asc
+
 responses:
   '200':
     description: Successfully retrieved list of contacts with pagination
@@ -49,12 +64,12 @@ responses:
               type: string
               example: Successfully found contacts!
             data:
+              type: array
+              items:
+                $ref: '../../components/schemas/Contact.yaml'
+            meta:
               type: object
               properties:
-                data:
-                  type: array
-                  items:
-                    $ref: '../../components/schemas/Contact.yaml'
                 page:
                   type: integer
                   example: 1
