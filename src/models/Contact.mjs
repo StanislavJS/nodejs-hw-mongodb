@@ -1,4 +1,6 @@
-import { Schema, model } from 'mongoose';
+// src/models/Contact.mjs
+import { Schema, model } from "mongoose";
+
 
 const contactSchema = new Schema(
   {
@@ -8,13 +10,16 @@ const contactSchema = new Schema(
     isFavourite: { type: Boolean, default: false },
     contactType: {
       type: String,
-      enum: ['work', 'home', 'personal'],
-      default: 'personal',
+      enum: ["work", "home", "personal"],
+      default: "personal",
       required: true,
     },
+    photo: { type: String, default: null },
+    // userId
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true },
 );
 
-export const Contact = model('Contact', contactSchema, 'contacts');
-
+export const Contact = model("Contact", contactSchema, "contacts");
+export default Contact;

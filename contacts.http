@@ -1,0 +1,63 @@
+@baseUrl = http://localhost:3000
+
+### 1) Register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Dasha",
+  "email": "dasha@example.com",
+  "password": "qwerty123"
+}
+
+### 2) Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "dasha@example.com",
+  "password": "qwerty123"
+}
+
+# After login copy accessToken from response -> set variable `accessToken` manually in environment for next requests
+# or if using REST Client you can use response handling; otherwise copy-paste.
+
+### 3) Get contacts (list)
+GET {{baseUrl}}/contacts?page=1&perPage=5
+Authorization: Bearer 
+### 4) Create contact
+POST {{baseUrl}}/contacts
+Content-Type: application/json
+Authorization: Bearer 
+
+{
+  "name": "Ivan Petrov",
+  "phoneNumber": "+380991112233",
+  "email": "ivan@example.com",
+  "contactType": "work",
+  "isFavourite": true
+}
+
+### 5) Get contact by id (replace :id)
+GET {{baseUrl}}/contacts/
+Authorization: Bearer 
+### 6) Update contact
+PATCH {{baseUrl}}/contacts/
+Content-Type: application/json
+Authorization: Bearer 
+  "phoneNumber": "+380995551122"
+}
+
+### 7) Delete contact
+DELETE {{baseUrl}}/contacts/
+
+Authorization: Bearer 
+POST {{baseUrl}}/auth/refresh
+Content-Type: application/json
+# cookie refreshToken should be sent automatically by client if supported (REST Client/Browser)
+# or paste cookie header manually
+
+### 9) Logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+# cookie refreshToken should be sent automatically

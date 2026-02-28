@@ -1,223 +1,180 @@
-**hw4-validation**
+# 📧 Node.js REST API — Contacts App (with Auth, Email Reset & Images)
+
+## 🚀 Project Overview
+
+This project is a **Node.js REST API** built with **Express**, **MongoDB**, and **JWT authentication**.
+It supports:
+
+- User registration and login
+- JWT-based authentication
+- Password reset via email
+- Contact management (CRUD)
+- Image upload with `multer`
+- Deployment on **Render**
 
 ---
 
-# Node.js HW4 – Contacts API
+## 🧩 Features
 
-This project is the fourth homework for the Node.js course. It extends the previous CRUD app for managing contacts by adding **validation, pagination, sorting, and filtering**.
+### 🔐 Authentication
 
-## Features
+- User registration (`/auth/register`)
+- User login (`/auth/login`)
+- Token refresh (`/auth/refresh`)
+- Logout (`/auth/logout`)
 
-- CRUD operations for contacts
-- Input validation for `POST` and `PATCH` requests
-- Pagination for `GET /contacts`
-- Sorting by name
-- Optional filtering by `contactType` and `isFavourite`
-- Proper error handling with HTTP status codes
-- MongoDB as the database
+### 📩 Password Reset
 
-## Tech Stack
+- Request password reset (`/auth/send-reset-email`)
+- Reset password with a valid token (`/auth/reset-password`)
 
-- Node.js
-- Express
-- MongoDB + Mongoose
-- http-errors
-- Pino logger
-- Nodemon (for development)
-- REST Client for testing API requests
+### 👥 Contacts
+
+- Get all contacts (`GET /contacts`)
+- Get contact by ID (`GET /contacts/:id`)
+- Create new contact (`POST /contacts`)
+- Update contact (`PATCH /contacts/:id`)
+- Delete contact (`DELETE /contacts/:id`)
+
+### 🖼️ Image Upload
+
+- Add or update a contact with an uploaded image using **multipart/form-data**
 
 ---
 
-## Installation
+## ⚙️ Technologies Used
 
-1. Clone the repository:
+- **Node.js**
+- **Express**
+- **MongoDB + Mongoose**
+- **JWT (jsonwebtoken)**
+- **Nodemailer** (email sending)
+- **Multer** (file uploads)
+- **Render** (deployment)
 
-```bash
-git clone https://github.com/StanislavJS/nodejs-hw-mongodb.git
-cd nodejs-hw-mongodb
+---
+
+## 🧠 Password Reset Logic
+
+1. **POST `/auth/send-reset-email`**
+   - User sends their email.
+   - API generates a **JWT token (valid for 5 minutes)**.
+   - A reset link is generated:
+
+     ```
+     https://your-app.onrender.com/reset-password?token=...
+     ```
+
+   - If deployed on Render, email sending is **skipped** (Render blocks SMTP) —
+     but the **reset link is returned in the response** for testing.
+
+2. **PATCH `/auth/reset-password`**
+   - User submits a new password and token.
+   - Token is verified and the user’s password is updated.
+
+---
+
+## 🔧 Environment Variables
+
+Create a `.env` file in the project root with:
+
+```env
+PORT=3000
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+
+# Email (local SMTP)
+SMTP_HOST=smtp-relay.brevo.com
+SMTP_PORT=587
+SMTP_USER=your_brevo_user
+SMTP_PASSWORD=your_brevo_api_key
+SMTP_FROM=your_verified_email@example.com
+
+# App domain
+APP_DOMAIN=https://nodejs-hw-mongodb-0l3e.onrender.com
+
+# To skip email sending on Render
+RENDER=true
 ```
 
-2. Install dependencies:
+---
+
+## 🧪 Testing with Postman
+
+### 🔑 Auth
+
+- `POST /auth/register` — register new user
+- `POST /auth/login` — login and get tokens
+- `POST /auth/refresh` — refresh access token
+
+### 📩 Password Reset
+
+- `POST /auth/send-reset-email`
+  Send body:
+
+  ```json
+  { "email": "user@example.com" }
+  ```
+
+  ✅ Returns a reset link or sends an email.
+
+- `PATCH /auth/reset-password`
+
+  ```json
+  {
+    "token": "your_jwt_token",
+    "password": "newSecurePassword123"
+  }
+  ```
+
+### 👥 Contacts
+
+All contacts routes require **Bearer token**:
+
+- `GET /contacts`
+- `GET /contacts/:contactId`
+- `POST /contacts` (use `multipart/form-data` for image)
+- `PATCH /contacts/:contactId`
+- `DELETE /contacts/:contactId`
+
+---
+
+## 🧰 Development
 
 ```bash
 npm install
-```
-
-3. Create `.env` file based on `.env.example`:
-
-```
-PORT=3000
-MONGODB_URL=your_mongodb_connection_string
-```
-
-4. Run the development server:
-
-```bash
 npm run dev
 ```
 
-Server will start on `http://localhost:3000`.
+For production:
 
----
-
-## API Endpoints
-
-### Get All Contacts
-
-```
-GET /contacts
-```
-
-**Query Parameters:**
-
-| Parameter   | Description                                | Default |
-| ----------- | ------------------------------------------ | ------- |
-| page        | Page number                                | 1       |
-| perPage     | Number of items per page                   | 10      |
-| sortBy      | Field to sort by (e.g., `name`)            | -       |
-| sortOrder   | Sorting order: `asc` or `desc`             | asc     |
-| type        | Filter by contact type (optional)          | -       |
-| isFavourite | Filter favourite contacts (`true`/`false`) | -       |
-
-**Response Example:**
-
-```json
-{
-  "status": 200,
-  "message": "Successfully found contacts!",
-  "data": {
-    "data": [
-      {
-        "_id": "68b889cd99d083f76299ca4f",
-        "name": "Alice",
-        "phoneNumber": "123456789",
-        "contactType": "home",
-        "isFavourite": true
-      }
-    ],
-    "page": 1,
-    "perPage": 10,
-    "totalItems": 25,
-    "totalPages": 3,
-    "hasPreviousPage": false,
-    "hasNextPage": true
-  }
-}
+```bash
+npm start
 ```
 
 ---
 
-### Get Contact by ID
+## 🌍 Deployment
 
-```
-GET /contacts/:id
-```
+- **Platform:** Render
+- **Environment:** Node.js 18+
+- **Build Command:**
 
-**Response Example:**
+  ```
+  npm install
+  ```
 
-```json
-{
-  "_id": "68b889cd99d083f76299ca4f",
-  "name": "Alice",
-  "phoneNumber": "123456789",
-  "contactType": "home",
-  "isFavourite": true
-}
-```
+- **Start Command:**
+
+  ```
+  npm start
+  ```
 
 ---
 
-### Create a Contact
+## 🧾 License
 
-```
-POST /contacts
-```
-
-**Body Example:**
-
-```json
-{
-  "name": "Bob",
-  "phoneNumber": "987654321",
-  "contactType": "work",
-  "isFavourite": false
-}
-```
-
-**Response:**
-
-```json
-{
-  "_id": "new_id_here",
-  "name": "Bob",
-  "phoneNumber": "987654321",
-  "contactType": "work",
-  "isFavourite": false
-}
-```
-
----
-
-### Update a Contact
-
-```
-PATCH /contacts/:id
-```
-
-**Body Example:**
-
-```json
-{
-  "name": "Bob Smith",
-  "isFavourite": true
-}
-```
-
-**Response Example:**
-
-```json
-{
-  "_id": "68b889cd99d083f76299ca4f",
-  "name": "Bob Smith",
-  "phoneNumber": "987654321",
-  "contactType": "work",
-  "isFavourite": true
-}
-```
-
----
-
-### Delete a Contact
-
-```
-DELETE /contacts/:id
-```
-
-**Response:** Status `204 No Content` if successful.
-
----
-
-## Notes
-
-- All requests and responses are in JSON format.
-- Input validation ensures all required fields are provided and string fields have length between **3 and 20 characters**.
-- Invalid IDs will return **400 Bad Request**.
-- Non-existing resources will return **404 Not Found**.
-- Pagination and sorting allow flexible API usage for large collections.
-
----
-
-## Deployment
-
-The app is deployed on **render.com** from branch `hw4-validation`.
-Make sure environment variables (`PORT`, `MONGODB_URL`) are set correctly.
-
----
-
-## Author
-
-Stanislav Tatarchuk – Vilnius, Lithuania
-GitHub: [https://github.com/StanislavJS](https://github.com/StanislavJS)
-Email: [stasyk55@gmail.com](mailto:stasyk55@gmail.com)
+MIT © 2025 Stanislav Tatarchuk
+Vilnius, Lithuania
 
 ---

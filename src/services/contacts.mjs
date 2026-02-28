@@ -1,83 +1,65 @@
-import createError from 'http-errors';
-import { Contact } from '../models/Contact.mjs';
+// src/services/contacts.mjs
+import { Contact } from "../models/Contact.mjs";
+import createHttpError from "http-errors";
 
-export const getAllContacts = async ({
-  page = 1,
-  perPage = 10,
-  sortBy = 'name',
-  sortOrder = 'asc',
-  filter = {}
-} = {}) => {
+// Get all contacts
+export const getAll = async ({ userId, page = 1, perPage = 10, sortBy = "createdAt", sortOrder = "asc", filter = {} }) => {
   const pageNum = Math.max(1, Number(page) || 1);
   const limit = Math.max(1, Number(perPage) || 10);
   const skip = (pageNum - 1) * limit;
 
-  const query = {};
-  if (filter.type) {
-    query.contactType = filter.type;
+  const query = { userId };
+
+  if (filter.type) query.contactType = filter.type;
+  if (typeof filter.isFavourite !== "undefined") {
+    query.isFavourite = filter.isFavourite === true || filter.isFavourite === "true";
   }
 
-  if (typeof filter.isFavourite !== 'undefined') {
-    if (filter.isFavourite === 'true' || filter.isFavourite === true) {
-      query.isFavourite = true;
-    } else if (filter.isFavourite === 'false' || filter.isFavourite === false) {
-      query.isFavourite = false;
-    }
-  }
+  const sort = { [sortBy]: sortOrder === "desc" ? -1 : 1 };
 
-  // build sort object
-  const sort = {};
-  sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
-
-  const [totalItems, data] = await Promise.all([
+  const [contacts, total] = await Promise.all([
+    Contact.find(query).sort(sort).skip(skip).limit(limit),
     Contact.countDocuments(query),
-    Contact.find(query).sort(sort).skip(skip).limit(limit)
   ]);
 
-  const totalPages = Math.max(1, Math.ceil(totalItems / limit));
-
   return {
-    data,
+    contacts,
     page: pageNum,
     perPage: limit,
-    totalItems,
-    totalPages,
-    hasPreviousPage: pageNum > 1,
-    hasNextPage: pageNum < totalPages
+    total,
+    totalPages: Math.ceil(total / limit),
   };
 };
 
-export const getContactById = async (id) => {
-  const contact = await Contact.findById(id);
-  if (!contact) {
-    throw createError(404, 'Contact not found');
-  }
+// Get contact by ID
+export const getById = async (userId, id) => {
+  const contact = await Contact.findOne({ _id: id, userId });
+  if (!contact) throw createHttpError(404, "Contact not found");
   return contact;
 };
 
-export const createContact = async (data) => {
-  // validation middleware will normally prevent invalid payloads,
-  // but keep a defensive check anyway
-  if (!data.name || !data.phoneNumber) {
-    throw createError(400, 'Missing required fields: name or phoneNumber');
+// Create new contact
+export const create = async (userId, payload) => {
+  if (!payload.name || !payload.phoneNumber) {
+    throw createHttpError(400, "Missing required fields: name or phoneNumber");
   }
-
-  const newContact = await Contact.create(data);
-  return newContact;
+  const contact = await Contact.create({ ...payload, userId });
+  return contact;
 };
 
-export const updateContact = async (id, data) => {
-  const updated = await Contact.findByIdAndUpdate(id, data, { new: true });
-  if (!updated) {
-    throw createError(404, 'Contact not found');
-  }
+// Update contact
+export const update = async (userId, id, payload) => {
+  const updated = await Contact.findOneAndUpdate({ _id: id, userId }, payload, {
+    new: true,
+    runValidators: true,
+  });
+  if (!updated) throw createHttpError(404, "Contact not found");
   return updated;
 };
 
-export const deleteContact = async (id) => {
-  const deleted = await Contact.findByIdAndDelete(id);
-  if (!deleted) {
-    throw createError(404, 'Contact not found');
-  }
+// Delete contact
+export const remove = async (userId, id) => {
+  const deleted = await Contact.findOneAndDelete({ _id: id, userId });
+  if (!deleted) throw createHttpError(404, "Contact not found");
   return deleted;
 };
